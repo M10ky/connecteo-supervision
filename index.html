@@ -300,25 +300,25 @@ tfoot td{background:var(--gray-100);font-weight:700;border-top:2px solid var(--g
 <div class="page active" id="page-dash">
   <div class="row">
 
-    <!-- FILTRE GLOBAL -->
-    <div class="card" style="padding:14px 20px">
+    <!-- FILTRE DASHBOARD -->
+    <div class="card" style="padding:11px 16px">
       <div class="flex g12" style="flex-wrap:wrap;align-items:center">
-        <div class="card-hd" style="margin:0;flex:1;min-width:180px">
-          <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-          Filtre période — s'applique à tous les onglets
+        <div class="card-hd" style="margin:0;flex:1;min-width:160px">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Vue d'ensemble — filtre indépendant
         </div>
         <div class="fbar" style="margin:0;background:var(--teal-l);border:1px solid rgba(10,168,154,.2)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal-d)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal-d)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
           <span style="font-weight:700;color:var(--teal-d)">Du</span>
-          <input type="date" id="f-ev-start" onchange="applyGlobalFilter()">
+          <input type="date" id="f-dash-start" onchange="renderDash()">
           <span style="font-weight:700;color:var(--teal-d)">au</span>
-          <input type="date" id="f-ev-end" onchange="applyGlobalFilter()">
-          <button class="btn btn-sm btn-teal" onclick="clearEvFilter()">
+          <input type="date" id="f-dash-end" onchange="renderDash()">
+          <button class="btn btn-sm btn-teal" onclick="clearFilter('dash')">
             <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.68"/></svg>
             Réinitialiser
           </button>
         </div>
-        <div id="filter-badge" style="display:none;font-size:11px;font-weight:700;color:var(--teal-d);padding:4px 10px;background:var(--teal-l);border-radius:20px;border:1px solid rgba(10,168,154,.3)"></div>
+        <div id="filter-badge-dash" style="display:none;font-size:10px;font-weight:700;color:var(--teal-d);padding:3px 9px;background:var(--teal-l);border-radius:20px;border:1px solid rgba(10,168,154,.3)"></div>
       </div>
     </div>
 
@@ -428,8 +428,16 @@ tfoot td{background:var(--gray-100);font-weight:700;border-top:2px solid var(--g
 
     <!-- INDEX COMPTEUR -->
     <div class="card">
-      <div class="flex g12" style="margin-bottom:14px">
-        <div class="card-hd" style="margin:0;flex:1"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Relevés index compteur groupe</div>
+      <div class="flex g12" style="margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div class="card-hd" style="margin:0;flex:1;min-width:160px"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Relevés index compteur groupe</div>
+        <div class="fbar" style="margin:0;background:var(--teal-l);border:1px solid rgba(10,168,154,.2);padding:6px 10px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--teal-d)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span style="font-weight:700;color:var(--teal-d);font-size:10px">Du</span>
+          <input type="date" id="f-elec-start" onchange="renderIndex()" style="padding:3px 6px;font-size:11px;width:auto">
+          <span style="font-weight:700;color:var(--teal-d);font-size:10px">au</span>
+          <input type="date" id="f-elec-end" onchange="renderIndex()" style="padding:3px 6px;font-size:11px;width:auto">
+          <button class="btn btn-sm" style="padding:3px 8px;font-size:10px" onclick="clearFilter('elec')">Réinit.</button>
+        </div>
         <button class="btn btn-teal btn-sm" onclick="addIndex()">
           <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Ajouter un relevé
@@ -461,7 +469,15 @@ tfoot td{background:var(--gray-100);font-weight:700;border-top:2px solid var(--g
     <div class="card">
       <div class="flex g12" style="margin-bottom:4px">
         <div class="card-hd" style="margin:0;flex:1"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Tous les événements</div>
-        <div id="ev-filter-active-badge" style="display:none;font-size:11px;font-weight:700;color:var(--teal-d);padding:4px 10px;background:var(--teal-l);border-radius:20px;border:1px solid rgba(10,168,154,.3);align-self:center"></div>
+        <div class="fbar" style="margin:0;background:var(--amber-l);border:1px solid rgba(133,79,11,.2);padding:6px 10px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span style="font-weight:700;color:var(--amber);font-size:10px">Du</span>
+          <input type="date" id="f-ev-start" onchange="renderEvents()" style="padding:3px 6px;font-size:11px;width:auto">
+          <span style="font-weight:700;color:var(--amber);font-size:10px">au</span>
+          <input type="date" id="f-ev-end" onchange="renderEvents()" style="padding:3px 6px;font-size:11px;width:auto">
+          <button class="btn btn-sm" style="padding:3px 8px;font-size:10px" onclick="clearFilter('ev')">Réinit.</button>
+        </div>
+        <div id="ev-filter-active-badge" style="display:none"></div>
         <button class="btn btn-teal btn-sm" onclick="openModal()">
           <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Ajouter un événement
@@ -521,6 +537,24 @@ tfoot td{background:var(--gray-100);font-weight:700;border-top:2px solid var(--g
 <div class="page" id="page-jirama">
   <div class="row">
 
+    <!-- FILTRE JIRAMA -->
+    <div class="card" style="padding:11px 16px">
+      <div class="flex g12" style="flex-wrap:wrap;align-items:center">
+        <div class="card-hd" style="margin:0;flex:1;min-width:160px">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Relevés JIRAMA — filtre par mois
+        </div>
+        <div class="fbar" style="margin:0;background:var(--blue-l);border:1px solid rgba(24,95,165,.2);padding:6px 10px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span style="font-weight:700;color:var(--blue);font-size:10px">Du</span>
+          <input type="month" id="f-jirama-start" onchange="renderJirama()" style="padding:3px 6px;font-size:11px;width:auto">
+          <span style="font-weight:700;color:var(--blue);font-size:10px">au</span>
+          <input type="month" id="f-jirama-end" onchange="renderJirama()" style="padding:3px 6px;font-size:11px;width:auto">
+          <button class="btn btn-sm" style="padding:3px 8px;font-size:10px" onclick="clearFilter('jirama')">Réinit.</button>
+        </div>
+        <div id="filter-badge-jirama" style="display:none;font-size:10px;font-weight:700;color:var(--blue);padding:3px 9px;background:var(--blue-l);border-radius:20px;border:1px solid rgba(24,95,165,.2)"></div>
+      </div>
+    </div>
     <div class="alert info">Saisissez manuellement les relevés mensuels fournis par la JIRAMA. Les consommations d'électricité et d'eau sont indépendantes du groupe électrogène.</div>
 
     <!-- ELECTRICITE JIRAMA -->
@@ -567,7 +601,25 @@ tfoot td{background:var(--gray-100);font-weight:700;border-top:2px solid var(--g
 <!-- ══════════════ INTERNET ══════════════ -->
 <div class="page" id="page-net">
   <div class="row">
-    <div class="alert info">Les incidents internet sont saisis depuis l'onglet <strong>Événements</strong>. Cette page présente uniquement l'analyse et les indicateurs de performance. Le filtre période du Dashboard s'applique ici.</div>
+    <!-- FILTRE INTERNET -->
+    <div class="card" style="padding:11px 16px">
+      <div class="flex g12" style="flex-wrap:wrap;align-items:center">
+        <div class="card-hd" style="margin:0;flex:1;min-width:160px">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49"/></svg>
+          Analyse Internet — filtre indépendant
+        </div>
+        <div class="fbar" style="margin:0;background:var(--blue-l);border:1px solid rgba(24,95,165,.2);padding:6px 10px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span style="font-weight:700;color:var(--blue);font-size:10px">Du</span>
+          <input type="date" id="f-net-start" onchange="renderNetPage()" style="padding:3px 6px;font-size:11px;width:auto">
+          <span style="font-weight:700;color:var(--blue);font-size:10px">au</span>
+          <input type="date" id="f-net-end" onchange="renderNetPage()" style="padding:3px 6px;font-size:11px;width:auto">
+          <button class="btn btn-sm" style="padding:3px 8px;font-size:10px" onclick="clearFilter('net')">Réinit.</button>
+        </div>
+        <div id="filter-badge-net" style="display:none;font-size:10px;font-weight:700;color:var(--blue);padding:3px 9px;background:var(--blue-l);border-radius:20px;border:1px solid rgba(24,95,165,.2)"></div>
+      </div>
+    </div>
+    <div class="alert info">Les incidents internet sont saisis depuis l'onglet <strong>Événements</strong>. Saisissez un filtre ci-dessus pour analyser une période précise.</div>
 
     <div class="grid-4">
       <div class="kpi blue"><div class="kl">Total incidents</div><div class="kv" id="n-nb">0</div><div class="ks">tous événements</div></div>
@@ -628,7 +680,7 @@ const NET_COLORS={'Perte de connexion':'#E24B4A','Maintenance ISP':'#185FA5','Pr
 const NET_BADGE={'Perte de connexion':'red','Maintenance ISP':'blue','Problème routeur':'amber','Latence élevée':'purple','Coupure planifiée':'teal','Autre':'gray'};
 
 /* ══════════════════════════════════════
-   SUPABASE — CHARGEMENT INITIAL
+   SUPABASE — LOAD
 ══════════════════════════════════════ */
 async function load(){
   markDirty();
@@ -641,248 +693,157 @@ async function load(){
       supa.from('jirama_elec').select('*').order('month'),
       supa.from('jirama_eau').select('*').order('month'),
     ]);
-    if(cfg.data){
-      st.genpower=cfg.data.genpower||30;
-      st.kwhJour=cfg.data.kwh_jour||498;
-    }
+    if(cfg.data){st.genpower=cfg.data.genpower||30;st.kwhJour=cfg.data.kwh_jour||498;}
     st.indexData=(idx.data||[]).map(r=>({id:r.id,month:r.month,index:r.index_kwh}));
     st.events=(evts.data||[]).map(r=>({id:r.id,domaine:r.domaine,type:r.type,debut:r.debut?.slice(0,16),fin:r.fin?.slice(0,16),note:r.note||''}));
     st.jiramaElec=(jElec.data||[]).map(r=>({id:r.id,month:r.month,kwh:r.kwh}));
     st.jiramaEau=(jEau.data||[]).map(r=>({id:r.id,month:r.month,m3:r.m3}));
     document.getElementById('genpower').value=st.genpower;
     document.getElementById('kwh-jour').value=st.kwhJour;
-    markClean();
-    renderAll();
-  }catch(e){
-    toast('Erreur connexion Supabase : '+e.message,'err');
-    console.error(e);
-  }finally{
-    document.getElementById('loading-overlay').style.display='none';
-  }
+    markClean();renderAll();
+  }catch(e){toast('Erreur Supabase : '+e.message,'err');console.error(e);}
+  finally{document.getElementById('loading-overlay').style.display='none';}
 }
 
-/* ══════════════════════════════════════
-   SUPABASE — CONFIG
-══════════════════════════════════════ */
+/* ── CONFIG ── */
 async function save(){
   st.genpower=+document.getElementById('genpower').value||30;
   st.kwhJour=+document.getElementById('kwh-jour').value||0;
-  const kw=st.genpower*0.8;
-  const charge=st.kwhJour>0?st.kwhJour/24:0;
-  const taux=kw>0&&charge>0?(charge/kw*100):0;
+  const kw=st.genpower*0.8,charge=st.kwhJour>0?st.kwhJour/24:0,taux=kw>0&&charge>0?(charge/kw*100):0;
   document.getElementById('genkw').textContent=kw.toFixed(1)+' kW';
   const gkpi=document.getElementById('e-genkw-kpi');if(gkpi)gkpi.textContent=kw.toFixed(1)+' kW';
   document.getElementById('e-charge').textContent=charge.toFixed(2);
   document.getElementById('e-taux').textContent=taux>0?taux.toFixed(0)+'%':'—';
-  document.getElementById('hint-charge').innerHTML=`Charge réelle site : <strong style="color:var(--blue)">${charge.toFixed(2)} kW</strong> &nbsp;(${st.kwhJour} kWh ÷ 24h) — base des calculs de durée`;
+  document.getElementById('hint-charge').innerHTML=`Charge réelle site : <strong style="color:var(--blue)">${charge.toFixed(2)} kW</strong> &nbsp;(${st.kwhJour} kWh ÷ 24h)`;
   document.getElementById('d-gen').textContent=st.genpower+' kVA';
   document.getElementById('d-genkw').textContent=kw.toFixed(1)+' kW utile';
   markDirty();
   const {error}=await supa.from('config').upsert({id:'main',genpower:st.genpower,kwh_jour:st.kwhJour,updated_at:new Date().toISOString()});
-  if(error){toast('Erreur sauvegarde config','err');console.error(error);}
-  else{markClean();renderAll();}
+  if(error){toast('Erreur sauvegarde config','err');}else{markClean();renderAll();}
 }
 
 /* ══════════════════════════════════════
-   SUPABASE — INDEX COMPTEUR
+   FILTRES INDÉPENDANTS PAR ONGLET
 ══════════════════════════════════════ */
-async function addIndex(){
+function getFilter(prefix){
+  const s=document.getElementById('f-'+prefix+'-start')?.value;
+  const e=document.getElementById('f-'+prefix+'-end')?.value;
+  // Pour jirama on utilise type="month" (YYYY-MM), sinon type="date" (YYYY-MM-DD)
+  const isMonth=(prefix==='jirama');
+  return{
+    start:s?(isMonth?s:new Date(s+'T00:00')):null,
+    end:e?(isMonth?e:new Date(e+'T23:59')):null,
+    isMonth,label:(s||e)?('Filtre : '+(s||'…')+' → '+(e||'…')):null
+  };
+}
+function clearFilter(prefix){
+  const si=document.getElementById('f-'+prefix+'-start');
+  const ei=document.getElementById('f-'+prefix+'-end');
+  if(si)si.value='';if(ei)ei.value='';
+  const badge=document.getElementById('filter-badge-'+prefix);
+  if(badge)badge.style.display='none';
+  // Trigger re-render
+  if(prefix==='dash')renderDash();
+  else if(prefix==='elec')renderIndex();
+  else if(prefix==='ev')renderEvents();
+  else if(prefix==='jirama')renderJirama();
+  else if(prefix==='net')renderNetPage();
+}
+function updateBadge(prefix,label){
+  const badge=document.getElementById('filter-badge-'+prefix);
+  if(!badge)return;
+  if(label){badge.style.display='';badge.textContent=label;}
+  else badge.style.display='none';
+}
+
+/* ── Filtre événements (date complète) ── */
+function filterEvsByDate(dom,start,end){
+  return st.events.filter(ev=>{
+    if(ev.domaine!==dom)return false;
+    const d=new Date(ev.debut);
+    if(start&&d<start)return false;
+    if(end&&d>end)return false;
+    return true;
+  }).sort((a,b)=>new Date(b.debut)-new Date(a.debut));
+}
+/* ── Filtre mois (YYYY-MM) ── */
+function filterByMonth(data,fs,fe){
+  return data.filter(r=>{
+    if(fs&&r.month<fs)return false;
+    if(fe&&r.month>fe)return false;
+    return true;
+  });
+}
+
+/* ══════════════════════════════════════
+   CALCUL UPTIME PRÉCIS
+   Calcule l'uptime sur la durée exacte du filtre.
+   Si pas de filtre → 30 jours glissants par défaut.
+══════════════════════════════════════ */
+function calcUptime(evList,startDate,endDate){
+  // Déterminer la fenêtre d'analyse
   const now=new Date();
-  const row={id:uid(),month:now.getFullYear()+'-'+p2(now.getMonth()+1),index_kwh:0};
-  markDirty();
-  const {error}=await supa.from('index_data').insert(row);
-  if(error){toast('Erreur ajout relevé','err');console.error(error);return;}
-  st.indexData.push({id:row.id,month:row.month,index:0});
-  st.indexData.sort((a,b)=>a.month.localeCompare(b.month));
-  toast('Relevé ajouté','ok');markClean();renderIndex();
-}
-
-async function delIndex(id){
-  if(!confirm('Supprimer ce relevé ?'))return;
-  markDirty();
-  const {error}=await supa.from('index_data').delete().eq('id',id);
-  if(error){toast('Erreur suppression','err');console.error(error);return;}
-  st.indexData=st.indexData.filter(x=>x.id!==id);
-  toast('Supprimé','warn');markClean();renderIndex();
-}
-
-async function updateIndex(id,field,value){
-  const dbField=field==='month'?'month':'index_kwh';
-  const r=st.indexData.find(x=>x.id===id);
-  if(r)r[field]=field==='index'?+value:value;
-  st.indexData.sort((a,b)=>a.month.localeCompare(b.month));
-  markDirty();
-  const {error}=await supa.from('index_data').update({[dbField]:field==='index'?+value:value}).eq('id',id);
-  if(error){toast('Erreur mise à jour','err');console.error(error);}
-  else{markClean();}
-  renderIndex();
+  const windowEnd=endDate||now;
+  const windowStart=startDate||(new Date(windowEnd-30*24*60*60*1000));
+  const windowMin=Math.max(1,(windowEnd-windowStart)/60000);
+  // Clamp chaque incident dans la fenêtre
+  let totalDown=0;
+  evList.forEach(ev=>{
+    const s=new Date(ev.debut),e=ev.fin?new Date(ev.fin):now;
+    const clampS=Math.max(s,windowStart),clampE=Math.min(e,windowEnd);
+    if(clampE>clampS)totalDown+=Math.round((clampE-clampS)/60000);
+  });
+  const upPct=Math.max(0,100-(totalDown/windowMin)*100);
+  const days=Math.round(windowMin/1440);
+  return{upPct,totalDown,days,windowMin};
 }
 
 /* ══════════════════════════════════════
-   SUPABASE — ÉVÉNEMENTS
+   RENDER — DASHBOARD
 ══════════════════════════════════════ */
-async function saveEvent(){
-  const domaine=document.getElementById('ev-domaine').value;
-  const type=document.getElementById('ev-type').value;
-  const debut=document.getElementById('ev-debut').value;
-  const fin=document.getElementById('ev-fin').value;
-  const note=document.getElementById('ev-note').value;
-  if(!debut||!fin){toast('Renseignez date début et fin','err');return;}
-  if(new Date(fin)<=new Date(debut)){toast('La fin doit être après le début','err');return;}
-  markDirty();
-  if(editId){
-    const {error}=await supa.from('events').update({domaine,type,debut,fin,note}).eq('id',editId);
-    if(error){toast('Erreur mise à jour événement','err');console.error(error);return;}
-    const i=st.events.findIndex(e=>e.id===editId);
-    if(i>=0)st.events[i]={id:editId,domaine,type,debut,fin,note};
-    toast('Événement mis à jour','ok');
-  }else{
-    const id=uid();
-    const {error}=await supa.from('events').insert({id,domaine,type,debut,fin,note});
-    if(error){toast('Erreur création événement','err');console.error(error);return;}
-    st.events.push({id,domaine,type,debut,fin,note});
-    toast('Événement enregistré','ok');
-  }
-  closeModal();markClean();renderEvents();
-}
-
-async function deleteEvent(id){
-  if(!confirm('Supprimer cet événement ?'))return;
-  markDirty();
-  const {error}=await supa.from('events').delete().eq('id',id);
-  if(error){toast('Erreur suppression','err');console.error(error);return;}
-  st.events=st.events.filter(e=>e.id!==id);
-  toast('Supprimé','warn');markClean();renderEvents();
+function renderDash(){
+  const f=getFilter('dash');
+  updateBadge('dash',f.label);
+  const elecList=filterEvsByDate('elec',f.start,f.end);
+  const netList=filterEvsByDate('net',f.start,f.end);
+  // Élec
+  const eu=calcUptime(elecList,f.start,f.end);
+  set('d-elec-nb',elecList.length);
+  set('d-elec-dur',fmtMin(eu.totalDown));
+  set('d-elec-up',eu.upPct.toFixed(1)+'%');
+  setKs('d-elec-up',`% dispo sur ${eu.days}j`);
+  upd('d-elec-upbar',eu.upPct,eu.upPct>98?'#639922':eu.upPct>90?'#EF9F27':'#E24B4A');
+  // Net
+  const nu=calcUptime(netList,f.start,f.end);
+  const nAvg=netList.length?Math.round(nu.totalDown/netList.length):0;
+  set('d-net-nb',netList.length);
+  set('d-net-dur',fmtMin(nu.totalDown));
+  set('d-net-up',nu.upPct.toFixed(1)+'%');
+  setKs('d-net-up',`% dispo sur ${nu.days}j`);
+  upd('d-net-upbar',nu.upPct,'var(--blue)');
+  set('d-net-avg',netList.length?fmtMin(nAvg):'—');
+  // Charts dashboard
+  renderDashCharts(elecList,netList);
 }
 
 /* ══════════════════════════════════════
-   SUPABASE — JIRAMA ÉLEC
-══════════════════════════════════════ */
-async function addJiramaElec(){
-  const now=new Date();
-  const row={id:uid(),month:now.getFullYear()+'-'+p2(now.getMonth()+1),kwh:0};
-  markDirty();
-  const {error}=await supa.from('jirama_elec').insert(row);
-  if(error){toast('Erreur ajout JIRAMA élec','err');console.error(error);return;}
-  st.jiramaElec.push(row);
-  st.jiramaElec.sort((a,b)=>a.month.localeCompare(b.month));
-  toast('Mois ajouté','ok');markClean();renderJirama();
-}
-
-async function delJiramaElec(id){
-  if(!confirm('Supprimer ?'))return;
-  markDirty();
-  const {error}=await supa.from('jirama_elec').delete().eq('id',id);
-  if(error){toast('Erreur suppression','err');return;}
-  st.jiramaElec=st.jiramaElec.filter(x=>x.id!==id);
-  toast('Supprimé','warn');markClean();renderJirama();
-}
-
-async function updateJiramaElec(id,field,value){
-  const r=st.jiramaElec.find(x=>x.id===id);
-  if(r)r[field]=field==='kwh'?+value:value;
-  st.jiramaElec.sort((a,b)=>a.month.localeCompare(b.month));
-  markDirty();
-  const {error}=await supa.from('jirama_elec').update({[field]:field==='kwh'?+value:value}).eq('id',id);
-  if(error){toast('Erreur mise à jour','err');console.error(error);}
-  else{markClean();}
-  renderJirama();
-}
-
-/* ══════════════════════════════════════
-   SUPABASE — JIRAMA EAU
-══════════════════════════════════════ */
-async function addJiramaEau(){
-  const now=new Date();
-  const row={id:uid(),month:now.getFullYear()+'-'+p2(now.getMonth()+1),m3:0};
-  markDirty();
-  const {error}=await supa.from('jirama_eau').insert(row);
-  if(error){toast('Erreur ajout JIRAMA eau','err');console.error(error);return;}
-  st.jiramaEau.push(row);
-  st.jiramaEau.sort((a,b)=>a.month.localeCompare(b.month));
-  toast('Mois ajouté','ok');markClean();renderJirama();
-}
-
-async function delJiramaEau(id){
-  if(!confirm('Supprimer ?'))return;
-  markDirty();
-  const {error}=await supa.from('jirama_eau').delete().eq('id',id);
-  if(error){toast('Erreur suppression','err');return;}
-  st.jiramaEau=st.jiramaEau.filter(x=>x.id!==id);
-  toast('Supprimé','warn');markClean();renderJirama();
-}
-
-async function updateJiramaEau(id,field,value){
-  const r=st.jiramaEau.find(x=>x.id===id);
-  if(r)r[field]=field==='m3'?+value:value;
-  st.jiramaEau.sort((a,b)=>a.month.localeCompare(b.month));
-  markDirty();
-  const {error}=await supa.from('jirama_eau').update({[field]:field==='m3'?+value:value}).eq('id',id);
-  if(error){toast('Erreur mise à jour','err');console.error(error);}
-  else{markClean();}
-  renderJirama();
-}
-
-/* ══════════════════════════════════════
-   NAV
-══════════════════════════════════════ */
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.getElementById('tab-'+id).classList.add('active');
-  renderAll();
-}
-
-/* ══════════════════════════════════════
-   MODAL ÉVÉNEMENT
-══════════════════════════════════════ */
-function updateEvType(){
-  const dom=document.getElementById('ev-domaine').value;
-  const sel=document.getElementById('ev-type');
-  sel.innerHTML=(dom==='elec'?ELEC_TYPES:NET_TYPES).map(t=>`<option>${t}</option>`).join('');
-}
-function openModal(id){
-  editId=id||null;
-  const ev=id?st.events.find(e=>e.id===id):null;
-  document.getElementById('modal-ev-title').textContent=id?'Modifier l\'événement':'Ajouter un événement';
-  document.getElementById('ev-domaine').value=ev?ev.domaine:'elec';
-  updateEvType();
-  if(ev){
-    document.getElementById('ev-type').value=ev.type;
-    document.getElementById('ev-debut').value=ev.debut||'';
-    document.getElementById('ev-fin').value=ev.fin||'';
-    document.getElementById('ev-note').value=ev.note||'';
-  }else{
-    document.getElementById('ev-debut').value='';
-    document.getElementById('ev-fin').value='';
-    document.getElementById('ev-note').value='';
-  }
-  document.getElementById('modal-ev-bg').classList.add('open');
-}
-function closeModal(){document.getElementById('modal-ev-bg').classList.remove('open');}
-document.getElementById('modal-ev-bg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
-
-/* ══════════════════════════════════════
-   RENDER — INDEX COMPTEUR
+   RENDER — INDEX COMPTEUR (onglet Groupe Électrogène)
 ══════════════════════════════════════ */
 function renderIndex(){
   const tbody=document.getElementById('index-body');
   const empty=document.getElementById('index-empty');
   tbody.innerHTML='';
   const allData=st.indexData.slice().sort((a,b)=>a.month.localeCompare(b.month));
-  if(!allData.length){empty.style.display='block';empty.textContent='Aucun relevé — ajoutez le premier index compteur.';return;}
-  const f=getEvFilter();
+  if(!allData.length){empty.style.display='block';empty.textContent='Aucun relevé — ajoutez le premier index.';return;}
+  const f=getFilter('elec');
+  // Convertir les dates en format YYYY-MM pour filtrage
   const fs=f.start?f.start.toISOString().slice(0,7):null;
   const fe=f.end?f.end.toISOString().slice(0,7):null;
-  const data=allData.filter(r=>{
-    if(fs&&r.month<fs)return false;
-    if(fe&&r.month>fe)return false;
-    return true;
-  });
+  updateBadge('elec',f.label);
+  const data=filterByMonth(allData,fs,fe);
   if(!data.length){
     empty.style.display='block';
-    empty.textContent=fs||fe?'Aucun relevé pour cette période — ajustez le filtre ou réinitialisez.':'Aucun relevé — ajoutez le premier index compteur.';
+    empty.textContent=fs||fe?'Aucun relevé sur cette période — réinitialisez le filtre.':'Aucun relevé — ajoutez le premier index.';
     return;
   }
   empty.style.display='none';
@@ -909,51 +870,25 @@ function renderIndex(){
 }
 
 /* ══════════════════════════════════════
-   RENDER — FILTRE GLOBAL
+   RENDER — ÉVÉNEMENTS (onglet dédié)
 ══════════════════════════════════════ */
-function getEvFilter(){
-  const s=document.getElementById('f-ev-start').value;
-  const e=document.getElementById('f-ev-end').value;
-  return{start:s?new Date(s+'T00:00'):null,end:e?new Date(e+'T23:59'):null};
-}
-function applyGlobalFilter(){
-  const s=document.getElementById('f-ev-start').value;
-  const e=document.getElementById('f-ev-end').value;
-  const badge=document.getElementById('filter-badge');
+function renderEvents(){
+  const f=getFilter('ev');
+  updateBadge('ev',f.label);
   const evBadge=document.getElementById('ev-filter-active-badge');
-  if(s||e){
-    const fmt=d=>new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
-    const txt='Filtre actif : '+(s?fmt(s):'…')+' → '+(e?fmt(e):'…');
-    badge.style.display='';badge.textContent=txt;
-    if(evBadge){evBadge.style.display='flex';evBadge.textContent=txt;}
-  }else{
-    badge.style.display='none';
-    if(evBadge)evBadge.style.display='none';
-  }
-  renderAll();
+  if(evBadge){if(f.label){evBadge.style.display='';evBadge.textContent=f.label;}else evBadge.style.display='none';}
+  const elecList=filterEvsByDate('elec',f.start,f.end);
+  const netList=filterEvsByDate('net',f.start,f.end);
+  renderEvTable(elecList,'ev-elec-body','ev-elec-empty','elec');
+  renderEvTable(netList,'ev-net-body','ev-net-empty','net');
+  statsBlock(elecList,'ev-elec-stats',f.start,f.end);
+  statsBlock(netList,'ev-net-stats',f.start,f.end);
+  const total=st.events.length;
+  const nb=document.getElementById('tab-ev-nb');
+  if(total>0){nb.style.display='';nb.textContent=total;}else nb.style.display='none';
 }
-function clearEvFilter(){
-  document.getElementById('f-ev-start').value='';
-  document.getElementById('f-ev-end').value='';
-  applyGlobalFilter();
-}
-function filteredEvs(dom){
-  const f=getEvFilter();
-  return st.events.filter(ev=>{
-    if(ev.domaine!==dom)return false;
-    const d=new Date(ev.debut);
-    if(f.start&&d<f.start)return false;
-    if(f.end&&d>f.end)return false;
-    return true;
-  }).sort((a,b)=>new Date(b.debut)-new Date(a.debut));
-}
-
-/* ══════════════════════════════════════
-   RENDER — ÉVÉNEMENTS
-══════════════════════════════════════ */
 function renderEvTable(list,tbodyId,emptyId,dom){
-  const tbody=document.getElementById(tbodyId);
-  const empty=document.getElementById(emptyId);
+  const tbody=document.getElementById(tbodyId),empty=document.getElementById(emptyId);
   tbody.innerHTML='';
   if(!list.length){empty.style.display='block';return;}
   empty.style.display='none';
@@ -978,57 +913,59 @@ function renderEvTable(list,tbodyId,emptyId,dom){
     tbody.appendChild(tr);
   });
 }
-
-function statsBlock(list,gridId){
-  const total=list.reduce((s,e)=>s+durMin(e.debut,e.fin),0);
-  const count=list.length;
-  const avg=count?Math.round(total/count):0;
-  const up=Math.max(0,100-(total/(30*24*60))*100);
+function statsBlock(list,gridId,startDate,endDate){
+  const u=calcUptime(list,startDate,endDate);
+  const count=list.length,avg=count?Math.round(u.totalDown/count):0;
   document.getElementById(gridId).innerHTML=`
     <div class="kpi amber"><div class="kl">Événements</div><div class="kv">${count}</div><div class="ks">période filtrée</div></div>
-    <div class="kpi red"><div class="kl">Durée totale</div><div class="kv" style="font-size:18px">${fmtMin(total)}</div><div class="ks">cumulée</div></div>
+    <div class="kpi red"><div class="kl">Durée totale</div><div class="kv" style="font-size:18px">${fmtMin(u.totalDown)}</div><div class="ks">cumulée</div></div>
     <div class="kpi gray"><div class="kl">Durée moyenne</div><div class="kv" style="font-size:18px">${count?fmtMin(avg):'—'}</div><div class="ks">par événement</div></div>
-    <div class="kpi green"><div class="kl">Uptime</div><div class="kv">${up.toFixed(1)}%</div><div class="ks">
-      <div class="upbar"><div class="upfill" style="width:${up.toFixed(1)}%;background:${up>90?'#639922':up>70?'#EF9F27':'#E24B4A'}"></div></div>
+    <div class="kpi green"><div class="kl">Uptime sur ${u.days}j</div><div class="kv">${u.upPct.toFixed(1)}%</div><div class="ks">
+      <div class="upbar"><div class="upfill" style="width:${u.upPct.toFixed(1)}%;background:${u.upPct>98?'#639922':u.upPct>90?'#EF9F27':'#E24B4A'}"></div></div>
     </div></div>`;
 }
 
-function renderEvents(){
-  const elecList=filteredEvs('elec');
-  const netList=filteredEvs('net');
-  renderEvTable(elecList,'ev-elec-body','ev-elec-empty','elec');
-  renderEvTable(netList,'ev-net-body','ev-net-empty','net');
-  statsBlock(elecList,'ev-elec-stats');
-  statsBlock(netList,'ev-net-stats');
-  const total=st.events.length;
-  const nb=document.getElementById('tab-ev-nb');
-  if(total>0){nb.style.display='';nb.textContent=total;}else nb.style.display='none';
-  updateDashStats(elecList,netList);
+/* ══════════════════════════════════════
+   RENDER — PAGE INTERNET (onglet dédié)
+══════════════════════════════════════ */
+function renderNetPage(){
+  const f=getFilter('net');
+  updateBadge('net',f.label);
+  const netList=filterEvsByDate('net',f.start,f.end);
+  const u=calcUptime(netList,f.start,f.end);
+  const nAvg=netList.length?Math.round(u.totalDown/netList.length):0;
+  set('n-nb',netList.length);set('n-dur',fmtMin(u.totalDown));
+  set('n-avg',netList.length?fmtMin(nAvg):'—');
+  set('n-up',u.upPct.toFixed(1)+'%');
+  setKs('n-up',`% dispo sur ${u.days}j`);
+  upd('n-upbar',u.upPct,'var(--blue)');
+  // Charts page internet
+  const nm={};netList.forEach(e=>{const m=e.debut.slice(0,7);nm[m]=(nm[m]||0)+durMin(e.debut,e.fin);});
+  const nmK=Object.keys(nm).sort();
+  const nmCfg={type:'bar',data:{labels:nmK.map(fmtMonth),datasets:[{label:'h',data:nmK.map(k=>+(nm[k]/60).toFixed(1)),backgroundColor:'rgba(24,95,165,.18)',borderColor:'#185FA5',borderWidth:2,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y} h d'indisponibilité`}}},scales:{x:{ticks:{font:{size:10},color:'#888780'}},y:{ticks:{font:{size:10},callback:v=>v+'h'}}}}};
+  mk('chart-net-m2',nmCfg);
+  const nt={};netList.forEach(e=>{nt[e.type]=(nt[e.type]||0)+1;});
+  const ntL=Object.keys(nt),ntV=ntL.map(k=>nt[k]),ntC=ntL.map(k=>NET_COLORS[k]||'#888780');
+  mk('chart-net-t2',{type:'doughnut',data:{labels:ntL,datasets:[{data:ntV,backgroundColor:ntC,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%'}});
+  const legNt2=document.getElementById('leg-net-t2');
+  if(legNt2)legNt2.innerHTML=ntL.map((l,i)=>`<span><span class="lsq" style="background:${ntC[i]};border-radius:50%"></span>${l} (${ntV[i]})</span>`).join('');
 }
-
-function updateDashStats(elecFiltered,netFiltered){
-  const et=elecFiltered.reduce((s,e)=>s+durMin(e.debut,e.fin),0);
-  const nt=netFiltered.reduce((s,e)=>s+durMin(e.debut,e.fin),0);
-  const eUp=Math.max(0,100-(et/(30*24*60))*100);
-  const nUp=Math.max(0,100-(nt/(30*24*60))*100);
-  const nAvg=netFiltered.length?Math.round(nt/netFiltered.length):0;
-  set('d-elec-nb',elecFiltered.length);set('d-elec-dur',fmtMin(et));set('d-elec-up',eUp.toFixed(1)+'%');
-  upd('d-elec-upbar',eUp,eUp>90?'#639922':eUp>70?'#EF9F27':'#E24B4A');
-  set('d-net-nb',netFiltered.length);set('d-net-dur',fmtMin(nt));set('d-net-up',nUp.toFixed(1)+'%');
-  upd('d-net-upbar',nUp,'var(--blue)');set('d-net-avg',netFiltered.length?fmtMin(nAvg):'—');
-  set('n-nb',netFiltered.length);set('n-dur',fmtMin(nt));
-  set('n-avg',netFiltered.length?fmtMin(nAvg):'—');set('n-up',nUp.toFixed(1)+'%');
-  upd('n-upbar',nUp,'var(--blue)');
-}
-const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-const upd=(id,pct,col)=>{const el=document.getElementById(id);if(el){el.style.width=Math.min(pct,100).toFixed(1)+'%';el.style.background=col;}};
 
 /* ══════════════════════════════════════
-   RENDER — JIRAMA
+   RENDER — JIRAMA (onglet dédié)
 ══════════════════════════════════════ */
+function renderJirama(){
+  const f=getFilter('jirama');
+  updateBadge('jirama',f.label);
+  const elecFiltered=filterByMonth(st.jiramaElec,f.start,f.end);
+  const eauFiltered=filterByMonth(st.jiramaEau,f.start,f.end);
+  renderJiramaTable(elecFiltered,'jirama-elec-body','jirama-elec-empty','kwh','kWh','kwh');
+  renderJiramaKPI(elecFiltered,'kwh','kWh','jirama-elec-kpi','teal');
+  renderJiramaTable(eauFiltered,'jirama-eau-body','jirama-eau-empty','m3','m³','m3');
+  renderJiramaKPI(eauFiltered,'m3','m³','jirama-eau-kpi','blue');
+}
 function renderJiramaTable(data,tbodyId,emptyId,field,unit,bindField){
-  const tbody=document.getElementById(tbodyId);
-  const empty=document.getElementById(emptyId);
+  const tbody=document.getElementById(tbodyId),empty=document.getElementById(emptyId);
   tbody.innerHTML='';
   const sorted=data.slice().sort((a,b)=>a.month.localeCompare(b.month));
   if(!sorted.length){empty.style.display='block';return;}
@@ -1036,10 +973,7 @@ function renderJiramaTable(data,tbodyId,emptyId,field,unit,bindField){
   const updateFn=bindField==='kwh'?'updateJiramaElec':'updateJiramaEau';
   const delFn=bindField==='kwh'?'delJiramaElec':'delJiramaEau';
   sorted.forEach((row,i)=>{
-    const prev=sorted[i-1];
-    const val=row[field];
-    const prevVal=prev?prev[field]:null;
-    const diff=prevVal!=null?val-prevVal:null;
+    const prev=sorted[i-1],val=row[field],prevVal=prev?prev[field]:null,diff=prevVal!=null?val-prevVal:null;
     const diffHtml=diff!=null?`<span class="${diff<0?'b b-green':diff>0?'b b-amber':'b b-gray'}">${diff>0?'+':''}${diff.toLocaleString('fr-FR')} ${unit}</span>`:'—';
     const tr=document.createElement('tr');
     tr.innerHTML=`
@@ -1058,47 +992,28 @@ function renderJiramaKPI(data,field,unit,gridId,color){
   const sorted=data.slice().sort((a,b)=>a.month.localeCompare(b.month));
   if(!sorted.length){document.getElementById(gridId).innerHTML='';return;}
   const vals=sorted.map(r=>r[field]);
-  const total=vals.reduce((s,v)=>s+v,0);
-  const avg=vals.length?Math.round(total/vals.length):0;
-  const max=Math.max(...vals);
+  const total=vals.reduce((s,v)=>s+v,0),avg=vals.length?Math.round(total/vals.length):0,max=Math.max(...vals);
   document.getElementById(gridId).innerHTML=`
     <div class="kpi ${color}"><div class="kl">Total période</div><div class="kv" style="font-size:20px">${total.toLocaleString('fr-FR')}</div><div class="ks">${unit}</div></div>
     <div class="kpi gray"><div class="kl">Moyenne / mois</div><div class="kv" style="font-size:20px">${avg.toLocaleString('fr-FR')}</div><div class="ks">${unit}</div></div>
     <div class="kpi amber"><div class="kl">Pic mensuel</div><div class="kv" style="font-size:20px">${max.toLocaleString('fr-FR')}</div><div class="ks">${unit}</div></div>`;
 }
-function renderJirama(){
-  const f=getEvFilter();
-  const fs=f.start?f.start.toISOString().slice(0,7):null;
-  const fe=f.end?f.end.toISOString().slice(0,7):null;
-  const filterMonth=data=>data.filter(r=>{
-    if(fs&&r.month<fs)return false;
-    if(fe&&r.month>fe)return false;
-    return true;
-  });
-  const elecFiltered=filterMonth(st.jiramaElec);
-  const eauFiltered=filterMonth(st.jiramaEau);
-  renderJiramaTable(elecFiltered,'jirama-elec-body','jirama-elec-empty','kwh','kWh','kwh');
-  renderJiramaKPI(elecFiltered,'kwh','kWh','jirama-elec-kpi','teal');
-  renderJiramaTable(eauFiltered,'jirama-eau-body','jirama-eau-empty','m3','m³','m3');
-  renderJiramaKPI(eauFiltered,'m3','m³','jirama-eau-kpi','blue');
-}
 
 /* ══════════════════════════════════════
-   RENDER — CHARTS
+   CHARTS — DASHBOARD
 ══════════════════════════════════════ */
 function mk(id,cfg){if(CH[id])CH[id].destroy();const c=document.getElementById(id);if(!c)return;CH[id]=new Chart(c,cfg);}
 
-function renderCharts(){
+function renderDashCharts(elecList,netList){
+  // Consommation index
   const sorted=st.indexData.slice().sort((a,b)=>a.month.localeCompare(b.month));
   const cLabels=[],cKwh=[],cMin=[];
-  const genKW=(st.genpower||30)*0.8;
-  const calcKW=st.kwhJour>0?st.kwhJour/24:genKW;
+  const genKW=(st.genpower||30)*0.8,calcKW=st.kwhJour>0?st.kwhJour/24:genKW;
   sorted.forEach((r,i)=>{
     if(!i)return;
     cLabels.push(fmtMonth(r.month));
     const kwh=Math.max(0,r.index-sorted[i-1].index);
-    cKwh.push(kwh);
-    cMin.push(calcKW>0?Math.round(kwh/calcKW*60):0);
+    cKwh.push(kwh);cMin.push(calcKW>0?Math.round(kwh/calcKW*60):0);
   });
   mk('chart-conso',{type:'bar',data:{labels:cLabels,datasets:[
     {label:'kWh',data:cKwh,backgroundColor:'rgba(10,168,154,.18)',borderColor:'#0AA89A',borderWidth:2,borderRadius:4,yAxisID:'y1',order:2},
@@ -1107,33 +1022,200 @@ function renderCharts(){
     plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.datasetIndex===0?` ${c.parsed.y.toLocaleString('fr-FR')} kWh`:` ${c.parsed.y.toLocaleString('fr-FR')} min`}}},
     scales:{x:{ticks:{font:{size:10},color:'#888780'},grid:{color:'rgba(0,0,0,0.04)'}},
       y1:{type:'linear',position:'left',title:{display:true,text:'kWh',font:{size:10},color:'#0AA89A'},ticks:{font:{size:10},color:'#0AA89A'},grid:{color:'rgba(0,0,0,0.04)'}},
-      y2:{type:'linear',position:'right',title:{display:true,text:'min utilisation',font:{size:10},color:'#185FA5'},ticks:{font:{size:10},color:'#185FA5'},grid:{drawOnChartArea:false}}
-    }}});
-
-  const elecFiltered=filteredEvs('elec');
-  const netFiltered=filteredEvs('net');
-  const et={};elecFiltered.forEach(e=>{et[e.type]=(et[e.type]||0)+1;});
+      y2:{type:'linear',position:'right',title:{display:true,text:'min utilisation',font:{size:10},color:'#185FA5'},ticks:{font:{size:10},color:'#185FA5'},grid:{drawOnChartArea:false}}}}});
+  // Donut élec
+  const et={};elecList.forEach(e=>{et[e.type]=(et[e.type]||0)+1;});
   const etL=Object.keys(et),etV=etL.map(k=>et[k]),etC=etL.map(k=>ELEC_COLORS[k]||'#888780');
   mk('chart-elec-type',{type:'doughnut',data:{labels:etL,datasets:[{data:etV,backgroundColor:etC,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%'}});
   document.getElementById('leg-elec-type').innerHTML=etL.map((l,i)=>`<span><span class="lsq" style="background:${etC[i]};border-radius:50%"></span>${l} (${etV[i]})</span>`).join('');
-  const nm={};netFiltered.forEach(e=>{const m=e.debut.slice(0,7);nm[m]=(nm[m]||0)+durMin(e.debut,e.fin);});
+  // Histogramme net dashboard
+  const nm={};netList.forEach(e=>{const m=e.debut.slice(0,7);nm[m]=(nm[m]||0)+durMin(e.debut,e.fin);});
   const nmK=Object.keys(nm).sort();
-  const nmCfg={type:'bar',data:{labels:nmK.map(fmtMonth),datasets:[{label:'h',data:nmK.map(k=>+(nm[k]/60).toFixed(1)),backgroundColor:'rgba(24,95,165,.18)',borderColor:'#185FA5',borderWidth:2,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y} h d'indisponibilité`}}},scales:{x:{ticks:{font:{size:10},color:'#888780'}},y:{ticks:{font:{size:10},callback:v=>v+'h'}}}}};
-  mk('chart-net-month',nmCfg);mk('chart-net-m2',nmCfg);
-  const nt={};netFiltered.forEach(e=>{nt[e.type]=(nt[e.type]||0)+1;});
+  const nmCfg={type:'bar',data:{labels:nmK.map(fmtMonth),datasets:[{label:'h',data:nmK.map(k=>+(nm[k]/60).toFixed(1)),backgroundColor:'rgba(24,95,165,.18)',borderColor:'#185FA5',borderWidth:2,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:'#888780'}},y:{ticks:{font:{size:10},callback:v=>v+'h'}}}}};
+  mk('chart-net-month',nmCfg);
+  // Donut net dashboard
+  const nt={};netList.forEach(e=>{nt[e.type]=(nt[e.type]||0)+1;});
   const ntL=Object.keys(nt),ntV=ntL.map(k=>nt[k]),ntC=ntL.map(k=>NET_COLORS[k]||'#888780');
-  const ntCfg={type:'doughnut',data:{labels:ntL,datasets:[{data:ntV,backgroundColor:ntC,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%'}};
-  mk('chart-net-type',ntCfg);mk('chart-net-t2',ntCfg);
+  mk('chart-net-type',{type:'doughnut',data:{labels:ntL,datasets:[{data:ntV,backgroundColor:ntC,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%'}});
   document.getElementById('leg-net-type').innerHTML=ntL.map((l,i)=>`<span><span class="lsq" style="background:${ntC[i]};border-radius:50%"></span>${l} (${ntV[i]})</span>`).join('');
-  const legNt2=document.getElementById('leg-net-t2');
-  if(legNt2)legNt2.innerHTML=document.getElementById('leg-net-type').innerHTML;
 }
 
 /* ══════════════════════════════════════
-   EXPORT JSON (backup optionnel)
+   SUPABASE — INDEX COMPTEUR
 ══════════════════════════════════════ */
+async function addIndex(){
+  const now=new Date();
+  const row={id:uid(),month:now.getFullYear()+'-'+p2(now.getMonth()+1),index_kwh:0};
+  markDirty();
+  const {error}=await supa.from('index_data').insert(row);
+  if(error){toast('Erreur ajout relevé','err');console.error(error);return;}
+  st.indexData.push({id:row.id,month:row.month,index:0});
+  st.indexData.sort((a,b)=>a.month.localeCompare(b.month));
+  toast('Relevé ajouté','ok');markClean();renderIndex();
+}
+async function delIndex(id){
+  if(!confirm('Supprimer ce relevé ?'))return;
+  markDirty();
+  const {error}=await supa.from('index_data').delete().eq('id',id);
+  if(error){toast('Erreur suppression','err');return;}
+  st.indexData=st.indexData.filter(x=>x.id!==id);
+  toast('Supprimé','warn');markClean();renderIndex();
+}
+async function updateIndex(id,field,value){
+  const dbField=field==='month'?'month':'index_kwh';
+  const r=st.indexData.find(x=>x.id===id);
+  if(r)r[field]=field==='index'?+value:value;
+  st.indexData.sort((a,b)=>a.month.localeCompare(b.month));
+  markDirty();
+  const {error}=await supa.from('index_data').update({[dbField]:field==='index'?+value:value}).eq('id',id);
+  if(error){toast('Erreur mise à jour','err');}else markClean();
+  renderIndex();
+}
+
+/* ── ÉVÉNEMENTS ── */
+async function saveEvent(){
+  const domaine=document.getElementById('ev-domaine').value,type=document.getElementById('ev-type').value;
+  const debut=document.getElementById('ev-debut').value,fin=document.getElementById('ev-fin').value;
+  const note=document.getElementById('ev-note').value;
+  if(!debut||!fin){toast('Renseignez date début et fin','err');return;}
+  if(new Date(fin)<=new Date(debut)){toast('La fin doit être après le début','err');return;}
+  markDirty();
+  if(editId){
+    const {error}=await supa.from('events').update({domaine,type,debut,fin,note}).eq('id',editId);
+    if(error){toast('Erreur mise à jour','err');return;}
+    const i=st.events.findIndex(e=>e.id===editId);
+    if(i>=0)st.events[i]={id:editId,domaine,type,debut,fin,note};
+    toast('Événement mis à jour','ok');
+  }else{
+    const id=uid();
+    const {error}=await supa.from('events').insert({id,domaine,type,debut,fin,note});
+    if(error){toast('Erreur création','err');return;}
+    st.events.push({id,domaine,type,debut,fin,note});
+    toast('Événement enregistré','ok');
+  }
+  closeModal();markClean();renderEvents();renderDash();
+}
+async function deleteEvent(id){
+  if(!confirm('Supprimer cet événement ?'))return;
+  markDirty();
+  const {error}=await supa.from('events').delete().eq('id',id);
+  if(error){toast('Erreur suppression','err');return;}
+  st.events=st.events.filter(e=>e.id!==id);
+  toast('Supprimé','warn');markClean();renderEvents();renderDash();
+}
+
+/* ── JIRAMA ÉLEC ── */
+async function addJiramaElec(){
+  const now=new Date();
+  const row={id:uid(),month:now.getFullYear()+'-'+p2(now.getMonth()+1),kwh:0};
+  markDirty();
+  const {error}=await supa.from('jirama_elec').insert(row);
+  if(error){toast('Erreur ajout','err');return;}
+  st.jiramaElec.push(row);st.jiramaElec.sort((a,b)=>a.month.localeCompare(b.month));
+  toast('Mois ajouté','ok');markClean();renderJirama();
+}
+async function delJiramaElec(id){
+  if(!confirm('Supprimer ?'))return;markDirty();
+  const {error}=await supa.from('jirama_elec').delete().eq('id',id);
+  if(error){toast('Erreur suppression','err');return;}
+  st.jiramaElec=st.jiramaElec.filter(x=>x.id!==id);
+  toast('Supprimé','warn');markClean();renderJirama();
+}
+async function updateJiramaElec(id,field,value){
+  const r=st.jiramaElec.find(x=>x.id===id);
+  if(r)r[field]=field==='kwh'?+value:value;
+  st.jiramaElec.sort((a,b)=>a.month.localeCompare(b.month));markDirty();
+  const {error}=await supa.from('jirama_elec').update({[field]:field==='kwh'?+value:value}).eq('id',id);
+  if(error){toast('Erreur mise à jour','err');}else markClean();
+  renderJirama();
+}
+
+/* ── JIRAMA EAU ── */
+async function addJiramaEau(){
+  const now=new Date();
+  const row={id:uid(),month:now.getFullYear()+'-'+p2(now.getMonth()+1),m3:0};
+  markDirty();
+  const {error}=await supa.from('jirama_eau').insert(row);
+  if(error){toast('Erreur ajout','err');return;}
+  st.jiramaEau.push(row);st.jiramaEau.sort((a,b)=>a.month.localeCompare(b.month));
+  toast('Mois ajouté','ok');markClean();renderJirama();
+}
+async function delJiramaEau(id){
+  if(!confirm('Supprimer ?'))return;markDirty();
+  const {error}=await supa.from('jirama_eau').delete().eq('id',id);
+  if(error){toast('Erreur suppression','err');return;}
+  st.jiramaEau=st.jiramaEau.filter(x=>x.id!==id);
+  toast('Supprimé','warn');markClean();renderJirama();
+}
+async function updateJiramaEau(id,field,value){
+  const r=st.jiramaEau.find(x=>x.id===id);
+  if(r)r[field]=field==='m3'?+value:value;
+  st.jiramaEau.sort((a,b)=>a.month.localeCompare(b.month));markDirty();
+  const {error}=await supa.from('jirama_eau').update({[field]:field==='m3'?+value:value}).eq('id',id);
+  if(error){toast('Erreur mise à jour','err');}else markClean();
+  renderJirama();
+}
+
+/* ── NAV ── */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  // Render uniquement l'onglet actif
+  if(id==='dash')renderDash();
+  else if(id==='elec')renderIndex();
+  else if(id==='events')renderEvents();
+  else if(id==='jirama')renderJirama();
+  else if(id==='net')renderNetPage();
+}
+
+/* ── MODAL ── */
+function updateEvType(){
+  const dom=document.getElementById('ev-domaine').value,sel=document.getElementById('ev-type');
+  sel.innerHTML=(dom==='elec'?ELEC_TYPES:NET_TYPES).map(t=>`<option>${t}</option>`).join('');
+}
+function openModal(id){
+  editId=id||null;
+  const ev=id?st.events.find(e=>e.id===id):null;
+  document.getElementById('modal-ev-title').textContent=id?'Modifier l\'événement':'Ajouter un événement';
+  document.getElementById('ev-domaine').value=ev?ev.domaine:'elec';
+  updateEvType();
+  if(ev){
+    document.getElementById('ev-type').value=ev.type;
+    document.getElementById('ev-debut').value=ev.debut||'';
+    document.getElementById('ev-fin').value=ev.fin||'';
+    document.getElementById('ev-note').value=ev.note||'';
+  }else{
+    document.getElementById('ev-debut').value='';
+    document.getElementById('ev-fin').value='';
+    document.getElementById('ev-note').value='';
+  }
+  document.getElementById('modal-ev-bg').classList.add('open');
+}
+function closeModal(){document.getElementById('modal-ev-bg').classList.remove('open');}
+document.getElementById('modal-ev-bg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+/* ── HELPERS DOM ── */
+const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+const setKs=(id,v)=>{const el=document.getElementById(id);if(el){const ks=el.querySelector?el.querySelector('.ks'):null;if(ks)ks.firstChild&&(ks.firstChild.textContent=v);}};
+const upd=(id,pct,col)=>{const el=document.getElementById(id);if(el){el.style.width=Math.min(pct,100).toFixed(1)+'%';el.style.background=col;}};
+
+/* ── RENDER ALL ── */
+function renderAll(){
+  const kw=(st.genpower||30)*0.8,charge=(st.kwhJour||0)/24,taux=kw>0?(charge/kw*100):0;
+  document.getElementById('genkw').textContent=kw.toFixed(1)+' kW';
+  document.getElementById('e-charge').textContent=charge.toFixed(2);
+  document.getElementById('e-taux').textContent=taux.toFixed(0)+'%';
+  document.getElementById('hint-charge').innerHTML=`Charge permanente estimée : <strong style="color:var(--teal-d)">${charge.toFixed(2)} kW</strong> &nbsp;(${st.kwhJour} kWh ÷ 24h)`;
+  document.getElementById('d-gen').textContent=(st.genpower||30)+' kVA';
+  document.getElementById('d-genkw').textContent=kw.toFixed(1)+' kW utile';
+  renderDash();renderIndex();renderEvents();renderJirama();renderNetPage();
+}
+
+/* ── EXPORT ── */
 function exportJSON(){
-  const blob=new Blob([JSON.stringify({meta:{app:'Connecteo Supervision',v:'5.0-supabase',date:new Date().toISOString()},state:st},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({meta:{app:'Connecteo v5',date:new Date().toISOString()},state:st},null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='connecteo_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
   toast('Export JSON réussi','ok');
 }
@@ -1144,8 +1226,7 @@ function importJSON(e){
     try{
       const d=JSON.parse(ev.target.result);
       if(!d.state){toast('Format JSON invalide','err');return;}
-      if(!confirm('Importer ces données dans Supabase ? Les données existantes seront remplacées.'))return;
-      toast('Import en cours…','ok');
+      if(!confirm('Importer dans Supabase ?'))return;
       st={...st,...d.state};
       document.getElementById('genpower').value=st.genpower||30;
       document.getElementById('kwh-jour').value=st.kwhJour||498;
@@ -1156,35 +1237,17 @@ function importJSON(e){
         ...st.jiramaElec.map(r=>supa.from('jirama_elec').upsert({id:r.id,month:r.month,kwh:r.kwh})),
         ...st.jiramaEau.map(r=>supa.from('jirama_eau').upsert({id:r.id,month:r.month,m3:r.m3})),
       ]);
-      toast('Import Supabase réussi : '+f.name,'ok');
-      renderAll();markClean();
+      toast('Import Supabase réussi','ok');renderAll();markClean();
     }catch(ex){toast('Erreur : '+ex.message,'err');}
     e.target.value='';
   };
   r.readAsText(f);
 }
 
-/* ══════════════════════════════════════
-   RENDER ALL
-══════════════════════════════════════ */
-function renderAll(){
-  const kw=(st.genpower||30)*0.8;
-  const charge=(st.kwhJour||0)/24;
-  const taux=kw>0?(charge/kw*100):0;
-  document.getElementById('genkw').textContent=kw.toFixed(1)+' kW';
-  document.getElementById('e-charge').textContent=charge.toFixed(2);
-  document.getElementById('e-taux').textContent=taux.toFixed(0)+'%';
-  document.getElementById('hint-charge').innerHTML=`Charge permanente estimée : <strong style="color:var(--teal-d)">${charge.toFixed(2)} kW</strong> &nbsp;(${st.kwhJour} kWh ÷ 24h)`;
-  document.getElementById('d-gen').textContent=(st.genpower||30)+' kVA';
-  document.getElementById('d-genkw').textContent=kw.toFixed(1)+' kW utile';
-  renderIndex();renderEvents();renderJirama();renderCharts();
-}
-
-/* ══════════════════════════════════════
-   INIT
-══════════════════════════════════════ */
+/* ── INIT ── */
 updateEvType();
 load();
+
 </script>
 </body>
 </html>
