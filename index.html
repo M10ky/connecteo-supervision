@@ -927,7 +927,7 @@ const uid=()=>Date.now()+'_'+Math.random().toString(36).slice(2,6);
 const p2=n=>String(n).padStart(2,'0');
 const fmtDT=dt=>{if(!dt)return'—';const d=new Date(dt);return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});};
 const fmtMonth=m=>{if(!m)return'—';const[y,mo]=m.split('-');const N=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];return(N[+mo-1]||'?')+' '+y;};
-const durMin=(a,b)=>(!a||!b)?0:Math.max(0,Math.round((new Date(b)-new Date(a))/60000));
+const durMin=(a,b)=>{if(!a)return 0;const end=b?new Date(b):new Date();return Math.max(0,Math.round((end-new Date(a))/60000));};
 const fmtMin=m=>{if(m<=0)return'—';const h=Math.floor(m/60),mi=m%60;return h>0?`${h}h ${p2(mi)}min`:`${mi} min`;};
 
 function toast(msg,type='ok'){
@@ -1036,9 +1036,12 @@ function updateBadge(prefix,label){
 function filterEvsByDate(dom,start,end){
   return st.events.filter(ev=>{
     if(ev.domaine!==dom)return false;
-    const d=new Date(ev.debut);
-    if(start&&d<start)return false;
-    if(end&&d>end)return false;
+    const s=new Date(ev.debut);
+    const e=ev.fin?new Date(ev.fin):new Date();
+    // Un événement est retenu s'il CHEVAUCHE la période filtrée,
+    // même s'il a commencé avant ou se termine après (ou est toujours en cours).
+    if(start&&e<start)return false;
+    if(end&&s>end)return false;
     return true;
   }).sort((a,b)=>new Date(b.debut)-new Date(a.debut));
 }
@@ -1056,17 +1059,46 @@ function filterByMonth(data,fs,fe){
 function calcUptime(evList,startDate,endDate){
   const now=new Date();
   const windowEnd=endDate||now;
-  const windowStart=startDate||(new Date(windowEnd-30*24*60*60*1000));
+  // Pas de filtre de début fourni : on cale la fenêtre sur l'historique réellement
+  // affiché (1er événement de la liste) au lieu d'une fenêtre fixe de 30j déconnectée
+  // des données montrées à l'écran.
+  let windowStart;
+  if(startDate){
+    windowStart=startDate;
+  }else if(evList.length){
+    windowStart=evList.reduce((min,ev)=>{const d=new Date(ev.debut);return d<min?d:min;},new Date(evList[0].debut));
+  }else{
+    windowStart=new Date(windowEnd-30*24*60*60*1000);
+  }
   const windowMin=Math.max(1,(windowEnd-windowStart)/60000);
-  let totalDown=0;
+
+  // 1) Portion de chaque événement à l'intérieur de la fenêtre (clamp).
+  // 2) totalDownRaw = somme brute (sert au calcul de durée MOYENNE par événement).
+  // 3) totalDown = union des intervalles fusionnés (sert au % uptime et à la durée
+  //    totale réelle), pour ne jamais compter deux fois du temps qui se chevauche
+  //    entre plusieurs pannes simultanées.
+  const intervals=[];
+  let totalDownRaw=0;
   evList.forEach(ev=>{
     const s=new Date(ev.debut),e=ev.fin?new Date(ev.fin):now;
     const clampS=Math.max(s,windowStart),clampE=Math.min(e,windowEnd);
-    if(clampE>clampS)totalDown+=Math.round((clampE-clampS)/60000);
+    if(clampE>clampS){
+      totalDownRaw+=Math.round((clampE-clampS)/60000);
+      intervals.push([clampS,clampE]);
+    }
   });
+  intervals.sort((a,b)=>a[0]-b[0]);
+  let totalDown=0,curS=null,curE=null;
+  intervals.forEach(([s,e])=>{
+    if(curS===null){curS=s;curE=e;}
+    else if(s<=curE){if(e>curE)curE=e;}
+    else{totalDown+=Math.round((curE-curS)/60000);curS=s;curE=e;}
+  });
+  if(curS!==null)totalDown+=Math.round((curE-curS)/60000);
+
   const upPct=Math.max(0,100-(totalDown/windowMin)*100);
   const days=Math.round(windowMin/1440);
-  return{upPct,totalDown,days,windowMin};
+  return{upPct,totalDown,totalDownRaw,days,windowMin};
 }
 
 /* ══════════════════════════════════════
@@ -1083,7 +1115,7 @@ function renderDash(){
   set('d-elec-up',eu.upPct.toFixed(1)+'%');
   upd('d-elec-upbar',eu.upPct,eu.upPct>98?'#639922':eu.upPct>90?'#EF9F27':'#E24B4A');
   const nu=calcUptime(netList,f.start,f.end);
-  const nAvg=netList.length?Math.round(nu.totalDown/netList.length):0;
+  const nAvg=netList.length?Math.round(nu.totalDownRaw/netList.length):0;
   set('d-net-nb',netList.length);
   set('d-net-dur',fmtMin(nu.totalDown));
   set('d-net-up',nu.upPct.toFixed(1)+'%');
@@ -1176,7 +1208,7 @@ function renderEvTable(list,tbodyId,emptyId,dom){
 }
 function statsBlock(list,gridId,startDate,endDate){
   const u=calcUptime(list,startDate,endDate);
-  const count=list.length,avg=count?Math.round(u.totalDown/count):0;
+  const count=list.length,avg=count?Math.round(u.totalDownRaw/count):0;
   document.getElementById(gridId).innerHTML=`
     <div class="kpi amber"><div class="kl">Événements</div><div class="kv">${count}</div><div class="ks">période filtrée</div></div>
     <div class="kpi red"><div class="kl">Durée totale</div><div class="kv" style="font-size:18px">${fmtMin(u.totalDown)}</div><div class="ks">cumulée</div></div>
@@ -1194,7 +1226,7 @@ function renderNetPage(){
   updateBadge('net',f.label);
   const netList=filterEvsByDate('net',f.start,f.end);
   const u=calcUptime(netList,f.start,f.end);
-  const nAvg=netList.length?Math.round(u.totalDown/netList.length):0;
+  const nAvg=netList.length?Math.round(u.totalDownRaw/netList.length):0;
   set('n-nb',netList.length);set('n-dur',fmtMin(u.totalDown));
   set('n-avg',netList.length?fmtMin(nAvg):'—');
   set('n-up',u.upPct.toFixed(1)+'%');
